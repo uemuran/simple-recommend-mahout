@@ -1,0 +1,13 @@
+---
+# These tasks install tomcat  modules.
+
+- name: add a new user
+  user: name=tomcat
+
+- name: Install tomcat etc
+  yum: name={{ item }} state=present enablerepo=jpackage disable_gpg_check=yes
+  with_items:
+   - tomcat7
+
+- name: tomcat service state
+  service: name=tomcat7 state=started enabled=yes

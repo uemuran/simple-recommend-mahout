@@ -1,0 +1,12 @@
+---
+# This playbook deploys the whole application stack in this site.  
+
+- name: configure and deploy the webservers and application code
+  tags: dockerservers
+  hosts: server
+  sudo: yes
+#  vars_files:
+#    - group_vars/dockerservers
+  roles:
+    - common
+    - docker

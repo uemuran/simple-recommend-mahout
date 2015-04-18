@@ -1,0 +1,8 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+# EPEL/Remi/RPMforgeをインストールする
+- yum: name={{item}} enablerepo=epel
+  with_items:
+    - docker-io
+

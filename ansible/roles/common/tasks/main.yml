@@ -1,0 +1,39 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+# EPEL/Remi/RPMforge/jpackageをインストールする
+- yum: name={{item}}
+  with_items:
+    - epel-release
+    - http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+    - http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    - http://mirrors.dotsrc.org/jpackage/6.0/generic/free/RPMS/jpackage-release-6-3.jpp6.noarch.rpm
+
+- name: install libselinux-python
+  yum: name=libselinux-python state=latest
+
+# 明示的に指定したいのでenabledは全て0にする
+- replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled *= *1" replace="enabled=0"
+  with_items:
+    - epel.repo
+    - rpmforge.repo
+    - remi.repo
+
+- name: Install ntp 
+  yum: name=ntp state=present
+  tags: ntp
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
+
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
+
