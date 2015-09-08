@@ -5,4 +5,3 @@
 - yum: name={{item}} enablerepo=epel
   with_items:
     - docker-io
-
